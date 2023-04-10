@@ -6,15 +6,17 @@ KEYSTORE_ALIAS = 'defkeystorealias'
 KEYSTORE_PASSWORD = 'defkeystorepass'
 KEYSTORE_PATH = os.path.expanduser('~/buildapp-keystore.jks')
 
-def run_process(cmdline, input_string=''):
-    print(f'Executing {cmdline}')
+def run_process(cmdline, input_string='', ignore_stderr=False):
+    print(f'Executing `{cmdline}`')
 
     subprocess.run(
         cmdline,
+        shell=True,
+        check=True,
         stdout=subprocess.DEVNULL,
         input=input_string.encode(),
-        shell=True,
-        check=True)
+        stderr=subprocess.DEVNULL if ignore_stderr else subprocess.PIPE
+    )
 
 
 class CompileApp:
@@ -23,7 +25,7 @@ class CompileApp:
         self.decompiled_path = decompiled_path
 
     def __enter__(self):
-        run_process(f'apktool b {self.decompiled_path} -o {self.prealigned_file}', '\n')
+        run_process(f'apktool b {self.decompiled_path} -o {self.prealigned_file}', input_string='\n')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         os.unlink(self.prealigned_file)
@@ -47,12 +49,12 @@ class ObtainKeystore:
     @staticmethod
     def obtain_default_keystore():
         if not os.path.isfile(KEYSTORE_PATH):
-            run_process(f'keytool -genkey -v -keystore {KEYSTORE_PATH} -alias {KEYSTORE_ALIAS} -keyalg RSA -keysize 2048 -validity 10000', f'{KEYSTORE_PASSWORD}\n{KEYSTORE_PASSWORD}\n\n\n\n\n\n\nyes')
+            run_process(f'keytool -genkey -v -keystore {KEYSTORE_PATH} -alias {KEYSTORE_ALIAS} -keyalg RSA -keysize 2048 -validity 10000', input_string=f'{KEYSTORE_PASSWORD}\n{KEYSTORE_PASSWORD}\n\n\n\n\n\n\nyes', ignore_stderr=True)
 
 class SignApk:
     def __init__(self, output_apk_path):
         self.output_apk_path = output_apk_path
-        run_process(f'apksigner sign --ks-key-alias {KEYSTORE_ALIAS} --ks {KEYSTORE_PATH} {output_apk_path}', f'{KEYSTORE_PASSWORD}\n')
+        run_process(f'apksigner sign --ks-key-alias {KEYSTORE_ALIAS} --ks {KEYSTORE_PATH} {output_apk_path}', input_string=f'{KEYSTORE_PASSWORD}\n')
 
     def __del__(self):
         os.unlink(f'{self.output_apk_path}.idsig')
