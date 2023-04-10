@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name = "buildapp",
-    version = "1.0.1",
+    version = "1.1.0",
     author = "Ariel Tubul",
     description = "Apk builder script",
     packages = setuptools.find_packages(),
