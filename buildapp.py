@@ -41,8 +41,8 @@ class ObtainKeystore:
         global KEYSTORE_ALIAS, KEYSTORE_PASSWORD, KEYSTORE_PATH
 
         KEYSTORE_PATH = keystore_path
-        KEYSTORE_ALIAS = input(f'Enrer keystore alias: ')
-        KEYSTORE_PASSWORD = input(f'Enrer alias for password: ')
+        KEYSTORE_ALIAS = input(f'Enter keystore alias: ')
+        KEYSTORE_PASSWORD = input(f'Enter alias for password: ')
 
     @staticmethod
     def obtain_default_keystore():
