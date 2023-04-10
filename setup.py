@@ -5,6 +5,9 @@ setuptools.setup(
     version = "1.0.1",
     author = "Ariel Tubul",
     description = "Apk builder script",
+    packages = setuptools.find_packages(),
     url = "https://github.com/mon231/buildapp/",
-    packages = setuptools.find_packages()
+    entry_points = {
+        'console_scripts': ['buildapp=buildapp.buildapp:main'],
+    }
 )
