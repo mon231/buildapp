@@ -81,17 +81,15 @@ def build_app(output_apk_path, decompiled_folder, keystore_path=None, install_af
         ObtainKeystore(keystore_path)
         SignApk(output_apk_path)
 
-        print('Compiled successfully!')
-
         if install_after_build:
             InstallApk(output_apk_path)
-            print('Installed successfully!')
 
 
 def main():
     args = parse_arguments()
     build_app(args.output_apk_path, args.decompiled_path, args.keystore_path, args.install)
 
+    print('buildapp completed successfully!')
 
 if __name__ == "__main__":
     main()
