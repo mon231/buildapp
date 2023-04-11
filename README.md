@@ -6,10 +6,10 @@ And rebuild it into a new apk you may install in your devices <br />
 *NOTE* that you should use this tool for debugging / educational purposes only!
 
 ## Installation
-Simply
-> pip install buildapp
+After having all [requirements](#Requirements), simply
+> pip install buildapp --upgrade
 
-Make sure to have python scripts folder in your path,
+Make sure to have python scripts folder in your path, <br/>
 And use the correct version of pip for python3
 
 ## Decompilation process
