@@ -4,7 +4,7 @@ import subprocess
 
 KEYSTORE_ALIAS = 'defkeystorealias'
 KEYSTORE_PASSWORD = 'defkeystorepass'
-KEYSTORE_PATH = os.path.expanduser('~/buildapp-keystore.jks')
+KEYSTORE_PATH = os.path.expanduser('~/.buildapp-keystore.jks')
 
 
 class CompileApp:
@@ -49,7 +49,7 @@ class SignApk:
 
 class InstallApk:
     def __init__(self, apk_path):
-        run_process(f'adb install {apk_path}')
+        run_process(f'adb install -r {apk_path}')
 
 
 def run_process(cmdline, input_string='', ignore_stderr=False):
