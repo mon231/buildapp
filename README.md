@@ -48,7 +48,7 @@ And that's it! Now you have a new apk, waiting to be installed it on your androi
 
 ## Requirements
 The project assumes that installer already has the following tools in his path:
-- android SDK tools (installed from android-sdk online)
+- android SDK tools ([download build_tools](https://dl.google.com/android/repository/build-tools_r33-windows.zip), [download platform_tools](https://dl.google.com/android/repository/platform-tools_r34.0.1-windows.zip))
     - adb (default at SDK\platform_tools, only required if `-i` flag is used)
     - zipalign (default at SDK\build_tools)
     - apksigner (default at SDK\build_tools)
