@@ -37,6 +37,7 @@ def main():
 
             build_tools_zip = ZipFile(io.BytesIO(download_responses[0].content))
             build_tools_zip.extractall(str(BUILD_TOOLS_PATH))
+            break
     else:
         raise Exception('Error couldn\'t download build-tools')
 
