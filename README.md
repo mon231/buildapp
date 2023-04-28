@@ -32,13 +32,17 @@ For additional flags, ran `buildapp -h` <br/>
     - > apktool b <sources_folder> -o <output_apk>
 - zip-alignment
     - apk is implemented as a zip file which should have the correct alignment in order to be installed
+    - implemented using [`zipalign`](https://developer.android.com/tools/zipalign)
 - generate / obtain keystore
     - our tool will generate a keystore if you didn't provide any
+    - implemented using [`keytool`](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html)
 - apk signing
     - our tool will sign the apk using that keystore
+    - implemented using [`apksigner`](https://developer.android.com/tools/apksigner)
 - apk installation
     - if asked to, buildapp will install the signed apk on connected adb device (if there's only one) <br/>
     *NOTE* that if you won't provide the same keystore as the original app already installed on your device, you may not be able to install the apk you built by this script unless you'll uninstall the original app first.
+    - implemented using [`adb`](https://developer.android.com/tools/adb)
 
 And that's it! Now you have a new apk, waiting to be installed it on your android devices!
 
