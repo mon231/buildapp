@@ -32,7 +32,7 @@ class ObtainKeystore:
 
         KEYSTORE_PATH = keystore_path
         KEYSTORE_ALIAS = input(f'Enter keystore alias: ')
-        KEYSTORE_PASSWORD = input(f'Enter alias for password: ')
+        KEYSTORE_PASSWORD = input(f'Enter keystore password: ')
 
     @staticmethod
     def obtain_default_keystore():
