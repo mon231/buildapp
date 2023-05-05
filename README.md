@@ -3,11 +3,14 @@ Corss-Platform script used to recompile APK that was decompiled by apktool <br/>
 That way, you can decompile an application, patch it's smali-source / resources / manifest / libs / ... <br />
 And rebuild it into a new apk you may install in your devices <br />
 <br />
-*NOTE* that you should use this tool for debugging / educational purposes only!
+*NOTE* that you should use this tool for debugging / educational purposes only! <br />
+*NOTE* that you must accept the LICENSE of the tools listed in the [requirements](#Requirements) section
 
 ## Installation
-After having all [requirements](#Requirements), simply
+Simply run:
 > pip install buildapp --upgrade
+If you didn't provide the [requirements](#Requirements) by yourself, use the following command to fetch the tools:
+> buildapp_fetch_tools
 
 Make sure to have python scripts folder in your path, <br/>
 And use the correct version of pip for python3
@@ -47,7 +50,7 @@ For additional flags, ran `buildapp -h` <br/>
 And that's it! Now you have a new apk, waiting to be installed it on your android devices!
 
 ## Requirements
-The project uses these tools:
+The project uses these tools (can be fetch using `buildapp_fetch_tools` after `pip install buildapp`):
 - android SDK tools ([download build_tools](https://dl.google.com/android/repository/build-tools_r33-windows.zip), [download platform_tools](https://dl.google.com/android/repository/platform-tools_r34.0.1-windows.zip))
     - adb (default at SDK\platform_tools, only required if `-i` flag is used)
     - zipalign (default at SDK\build_tools)
