@@ -42,26 +42,26 @@ PLATFORM_TO_PLATFORM_TOOLS_OS = {
 
 class ToolsFetcher:
     def __init__(self):
-        shutil.rmtree(BUILD_TOOLS_PATH, ignore_errors=True)
-        shutil.rmtree(PLATFORM_TOOLS_PATH, ignore_errors=True)
-
         self.__build_tools_os = PLATFORM_TO_BUILD_TOOLS_OS[sys.platform]
         self.__platform_tools_os = PLATFORM_TO_BUILD_TOOLS_OS[sys.platform]
         self.__build_tools_releases = requests.get(BUILD_TOOLS_RELEASES_URL).text
 
     def download_all_tools(self):
-        print('downloading build tools ...')
-        self.__download_build_tools()
-        ToolsFetcher.__unpack_subfolder(BUILD_TOOLS_PATH)
+        if not BUILD_TOOLS_PATH.is_dir():
+            print('downloading build tools ...')
+            self.__download_build_tools()
+            ToolsFetcher.__unpack_subfolder(BUILD_TOOLS_PATH)
 
-        print('downloading platform tools ...')
-        self.__download_platform_tools()
-        ToolsFetcher.__unpack_subfolder(PLATFORM_TOOLS_PATH)
+        if not PLATFORM_TOOLS_PATH.is_dir():
+            print('downloading platform tools ...')
+            self.__download_platform_tools()
+            ToolsFetcher.__unpack_subfolder(PLATFORM_TOOLS_PATH)
 
-        print('downloading apktool ...')
-        self.__download_apktool()
+        if not APKTOOL_PATH.is_dir():
+            print('downloading apktool ...')
+            self.__download_apktool()
 
-        print('installation completed!')
+        print('downloading completed!')
 
     def __download_build_tools(self):
         for major, minor, patch in re.findall(BUILD_TOOLS_PATTERN, self.__build_tools_releases):
@@ -108,10 +108,12 @@ class ToolsFetcher:
                 continue
 
             APKTOOL_PATH.mkdir(parents=True, exist_ok=True)
+            wrapper_path = APKTOOL_PATH / ('apktool.bat' if sys.platform == 'win32' else 'apktool')
 
             (APKTOOL_PATH / 'apktool.jar').write_bytes(resp.content)
-            (APKTOOL_PATH / ('apktool.bat' if sys.platform == 'win32' else 'apktool')).write_bytes(apktool_wrapper.content)
+            (wrapper_path).write_bytes(apktool_wrapper.content)
 
+            ToolsFetcher.__set_executable(wrapper_path)
             return
 
         raise RuntimeError('Error couldn\'t download build-tools')
@@ -142,7 +144,15 @@ class ToolsFetcher:
             print('Unpacking', new_path)
             shutil.copy(old_path, new_path)
 
+            ToolsFetcher.__set_executable(new_path)
+
         shutil.rmtree(subfolder, ignore_errors=True)
+
+    @staticmethod
+    def __set_executable(file_path: Path):
+        if os.name == 'posix':
+            EXECUTE_PERMISSIONS = 0o111
+            os.chmod(str(new_path), os.stat(str(new_path)).st_mode | EXECUTE_PERMISSIONS)
 
 
 def main():
