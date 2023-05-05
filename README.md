@@ -33,11 +33,11 @@ For additional flags, ran `buildapp -h` <br/>
 - zip-alignment
     - apk is implemented as a zip file which should have the correct alignment in order to be installed
     - implemented using [`zipalign`](https://developer.android.com/tools/zipalign)
-- generate / obtain keystore
-    - our tool will generate a keystore if you didn't provide any
-    - implemented using [`keytool`](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html)
+- obtain keystore
+    - our tool will use a default keystore if you won't provide one
+    - you may use [`keytool`](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html) to generate your own keystores
 - apk signing
-    - our tool will sign the apk using that keystore
+    - our tool will sign the apk using the keystore mentioned above
     - implemented using [`apksigner`](https://developer.android.com/tools/apksigner)
 - apk installation
     - if asked to, buildapp will install the signed apk on connected adb device (if there's only one) <br/>
@@ -47,10 +47,9 @@ For additional flags, ran `buildapp -h` <br/>
 And that's it! Now you have a new apk, waiting to be installed it on your android devices!
 
 ## Requirements
-The project assumes that installer already has the following tools in his path:
+The project uses these tools:
 - android SDK tools ([download build_tools](https://dl.google.com/android/repository/build-tools_r33-windows.zip), [download platform_tools](https://dl.google.com/android/repository/platform-tools_r34.0.1-windows.zip))
     - adb (default at SDK\platform_tools, only required if `-i` flag is used)
     - zipalign (default at SDK\build_tools)
     - apksigner (default at SDK\build_tools)
 - apktool [installation manual](https://ibotpeaches.github.io/Apktool/install/)
-- keytool (default at jdk or jre bin folders, only required if `-k` flag is missing)
