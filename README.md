@@ -9,6 +9,7 @@ And rebuild it into a new apk you may install in your devices <br />
 ## Installation
 Simply run:
 > pip install buildapp --upgrade
+
 If you didn't provide the [requirements](#Requirements) by yourself, use the following command to fetch the tools:
 > buildapp_fetch_tools
 
