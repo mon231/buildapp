@@ -43,7 +43,7 @@ PLATFORM_TO_PLATFORM_TOOLS_OS = {
 class ToolsFetcher:
     def __init__(self):
         self.__build_tools_os = PLATFORM_TO_BUILD_TOOLS_OS[sys.platform]
-        self.__platform_tools_os = PLATFORM_TO_BUILD_TOOLS_OS[sys.platform]
+        self.__platform_tools_os = PLATFORM_TO_PLATFORM_TOOLS_OS[sys.platform]
         self.__build_tools_releases = requests.get(BUILD_TOOLS_RELEASES_URL).text
 
     def download_all_tools(self):
