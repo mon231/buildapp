@@ -152,7 +152,7 @@ class ToolsFetcher:
     def __set_executable(file_path: Path):
         if os.name == 'posix':
             EXECUTE_PERMISSIONS = 0o111
-            os.chmod(str(new_path), os.stat(str(new_path)).st_mode | EXECUTE_PERMISSIONS)
+            os.chmod(str(file_path), os.stat(str(file_path)).st_mode | EXECUTE_PERMISSIONS)
 
 
 def main():
