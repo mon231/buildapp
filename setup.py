@@ -9,7 +9,7 @@ README_PATH = CURRENT_FOLDER / 'README.md'
 def main():
     setuptools.setup(
         name = "buildapp",
-        version = "1.3.0",
+        version = "1.3.1",
         author = "Ariel Tubul",
         description = "Apk builder script",
         packages = setuptools.find_packages(),
