@@ -93,16 +93,19 @@ def parse_arguments():
     parser.add_argument('-o', '--output-apk-path', required=True, help='path of output apk file')
     parser.add_argument('-d', '--decompiled-path', required=True, help='decompiled apk directory')
     parser.add_argument('-i', '--install', action='store_true', help='install on the adb device')
+    parser.add_argument('-u', '--do-not-sign', action='store_true', help='do not sign the built apk')
     parser.add_argument('-k', '--keystore-path', required=False, help='optional keystore final to sign the apk with')
 
     return parser.parse_args()
 
 
-def build_app(output_apk_path, decompiled_folder, keystore_path=None, install_after_build=False):
+def build_app(output_apk_path, decompiled_folder, keystore_path=None, install_after_build=False, sign_after_build=True):
     with CompileApp(decompiled_folder, output_apk_path):
         AlignApk(output_apk_path)
-        ObtainKeystore(keystore_path)
-        SignApk(output_apk_path)
+
+        if sign_after_build:
+            ObtainKeystore(keystore_path)
+            SignApk(output_apk_path)
 
         if install_after_build:
             InstallApk(output_apk_path)
@@ -110,7 +113,7 @@ def build_app(output_apk_path, decompiled_folder, keystore_path=None, install_af
 
 def main():
     args = parse_arguments()
-    build_app(args.output_apk_path, args.decompiled_path, args.keystore_path, args.install)
+    build_app(args.output_apk_path, args.decompiled_path, args.keystore_path, args.install, not args.do_not_sign)
 
     print('buildapp completed successfully!')
 
