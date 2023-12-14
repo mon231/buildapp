@@ -93,7 +93,7 @@ def parse_arguments():
     parser.add_argument('-o', '--output-apk-path', required=True, help='path of output apk file')
     parser.add_argument('-d', '--decompiled-path', required=True, help='decompiled apk directory')
     parser.add_argument('-i', '--install', action='store_true', help='install on the adb device')
-    parser.add_argument('-u', '--do-not-sign', action='store_true', help='do not sign the built apk')
+    parser.add_argument('-n', '--do-not-sign', action='store_true', help='do not sign the built apk')
     parser.add_argument('-k', '--keystore-path', required=False, help='optional keystore final to sign the apk with')
 
     return parser.parse_args()
