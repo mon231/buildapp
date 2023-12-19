@@ -1,5 +1,5 @@
 # buildapp
-Corss-Platform script used to recompile APK that was decompiled by apktool <br/>
+Cross-Platform script used to recompile APK that was decompiled by apktool <br/>
 That way, you can decompile an application, patch it's smali-source / resources / manifest / libs / ... <br />
 And rebuild it into a new apk you may install in your devices <br />
 <br />
