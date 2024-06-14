@@ -1,10 +1,12 @@
 import argparse
 import subprocess
 from os import environ
+from os import mkdir
 from sys import platform
 from pathlib import Path
 from base64 import b64decode
 from os.path import expanduser
+from os.path import isdir
 
 
 KEYSTORE_ALIAS = 'defkeystorealias'
@@ -118,4 +120,6 @@ def main():
     print('buildapp completed successfully!')
 
 if __name__ == "__main__":
+    if not isdir(RELTOOLS_ROOT):
+        mkdir(RELTOOLS_ROOT)
     main()
