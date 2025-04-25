@@ -9,7 +9,7 @@ from zipfile import ZipFile
 from os.path import expanduser
 
 
-DOWNLOAD_SUCCEEDED = 200
+HTTP_OK = 200
 
 APKTOOL_PATH = Path(expanduser('~/.reltools/third_party_apktool'))
 PLATFORM_TOOLS_PATH = Path(expanduser('~/.reltools/third_party_platform_tools'))
@@ -21,7 +21,7 @@ BUILD_TOOLS_RELEASES_URL = 'https://developer.android.com/tools/releases/build-t
 BUILD_TOOLS_DOWNLOAD_URL = 'https://dl.google.com/android/repository/build-tools_r{version}-{os}.zip'
 PLATFORM_TOOLS_DOWNLOAD_URL = 'https://dl.google.com/android/repository/platform-tools-latest-{os}.zip'
 
-APKTOOL_RELEASES_URL = 'https://bitbucket.org/iBotPeaches/apktool/downloads/'
+APKTOOL_RELEASES_URL = 'https://api.github.com/repos/iBotPeaches/Apktool/releases/latest'
 PLATFORM_TO_APKTOOL_WRAPPER_URL = {
     'linux': 'https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool',
     'darwin': 'https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/osx/apktool',
@@ -67,10 +67,10 @@ class ToolsFetcher:
         for major, minor, patch in re.findall(BUILD_TOOLS_PATTERN, self.__build_tools_releases):
             resp = requests.get(BUILD_TOOLS_DOWNLOAD_URL.format(version=f'{major}', os=self.__build_tools_os))
 
-            if resp.status_code != DOWNLOAD_SUCCEEDED:
+            if resp.status_code != HTTP_OK:
                 resp = requests.get(BUILD_TOOLS_DOWNLOAD_URL.format(version=f'{major}.{minor}.{patch}', os=self.__build_tools_os))
 
-            if resp.status_code != DOWNLOAD_SUCCEEDED:
+            if resp.status_code != HTTP_OK:
                 continue
 
             BUILD_TOOLS_PATH.mkdir(parents=True, exist_ok=True)
@@ -84,7 +84,7 @@ class ToolsFetcher:
     def __download_platform_tools(self):
         download_response = requests.get(PLATFORM_TOOLS_DOWNLOAD_URL.format(os=self.__platform_tools_os))
 
-        if download_response.status_code != DOWNLOAD_SUCCEEDED:
+        if download_response.status_code != HTTP_OK:
             raise RuntimeError('Error couldn\'t download platform tools')
 
         PLATFORM_TOOLS_PATH.mkdir(parents=True, exist_ok=True)
@@ -93,30 +93,29 @@ class ToolsFetcher:
         platform_tools_zip.extractall(str(PLATFORM_TOOLS_PATH))
 
     def __download_apktool(self):
+        APKTOOL_PATH.mkdir(parents=True, exist_ok=True)
         apktool_wrapper = requests.get(PLATFORM_TO_APKTOOL_WRAPPER_URL[sys.platform])
 
-        if apktool_wrapper.status_code != DOWNLOAD_SUCCEEDED:
+        if apktool_wrapper.status_code != HTTP_OK:
             raise RuntimeError('Couldn\'t download apktool wrapper')
 
+        wrapper_path = APKTOOL_PATH / ('apktool.bat' if sys.platform == 'win32' else 'apktool')
+        wrapper_path.write_bytes(apktool_wrapper.content)
+
         apktool_releases = requests.get(APKTOOL_RELEASES_URL)
-        APKTOOL_URL_PATTERN = r'(/iBotPeaches/apktool/downloads/apktool_\d+\.\d+\.\d+\.jar)'
 
-        for download_path in re.findall(APKTOOL_URL_PATTERN, apktool_releases.text):
-            resp = requests.get('https://bitbucket.org' + download_path)
+        if apktool_releases.status_code != HTTP_OK:
+            raise RuntimeError('Couldn\'t fetch apktool versions')
 
-            if resp.status_code != DOWNLOAD_SUCCEEDED:
-                continue
+        apktool_assets = apktool_releases.json().get("assets", [])
+        apktool_jar_url = next(filter(lambda asset: asset["name"].endswith(".jar"), apktool_assets), None)["browser_download_url"]
 
-            APKTOOL_PATH.mkdir(parents=True, exist_ok=True)
-            wrapper_path = APKTOOL_PATH / ('apktool.bat' if sys.platform == 'win32' else 'apktool')
+        jar_response = requests.get(apktool_jar_url)
+        if jar_response.status_code != HTTP_OK:
+            raise RuntimeError('Couldn\'t fetch apktool jar')
 
-            (APKTOOL_PATH / 'apktool.jar').write_bytes(resp.content)
-            (wrapper_path).write_bytes(apktool_wrapper.content)
-
-            ToolsFetcher.__set_executable(wrapper_path)
-            return
-
-        raise RuntimeError('Error couldn\'t download build-tools')
+        (APKTOOL_PATH / 'apktool.jar').write_bytes(jar_response.content)
+        ToolsFetcher.__set_executable(wrapper_path)
 
     @staticmethod
     def __get_subfolder(root: Path) -> Path:
